@@ -1489,6 +1489,8 @@ Split `num' into decimal digits and display them.
     PUSH[ ]
       HandleDigit
     LOOPCALL[ ]
+
+    POP[ ] # clean up stack
   )
 
 
@@ -2486,7 +2488,6 @@ ALIGNMENTS()dnl
           SWAP[ ]
           MSIRP[1] <!-- align P_0000 and set rp0 -->
 
-          DUP[ ]
           PUSH[ ]
             P_00000
           SWAP[ ]
