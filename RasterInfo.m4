@@ -39,34 +39,34 @@ The `RasterInfo' TrueType font
 ==============================
 
 This file defines a TrueType font called `RasterInfo.ttf'.  It contains a
-small set of characters mapped to a subset of the Microsoft symbol range
-(essentially character codes 0xF030-0xF03B).  A Macintosh 1/0 cmap is also
-present; the character codes are then 0x30-0x3B.
+small set of characters mapped to the character codes 0x30-0x3b (i.e.,
+digits 0-9, `:', and `;').  Both a Macintosh 1/0 and a Microsoft 4/3 cmap
+are present.
 
 If a TrueType bytecode interpreter is active, the characters return various
 information on the rasterizer, using output of the `GETINFO' bytecode
 instruction.
 
 
-    code    glyph name                     description
-   ----------------------------------------------------------------------
-    0xf030  PPEM                           the current PPEM value
-    0xf031  ScalerVersion                  the hinting engine version
-    0xf032  IsRotated                      1 if rotation is on
-    0xf033  IsStretched                    1 if stretching is on
-    0xf034  GrayscaleRendering             1 if grayscale rendering
-    0xf035  CleartypeEnabled               1 if ClearType enabled
-    0xf036  CleartypeCompatibleWidths      1 if ClearType's
-                                             compatible width mode is on
-    0xf037  CleartypeVerticalLCD           1 if ClearType uses
-                                             vertical LCD subpixels
-    0xf038  CleartypeBGRRendering          1 if ClearType uses BGR
-                                             rendering instead of RGB
-    0xf039  CleartypeSubpixelPositioning   1 if ClearType uses
-                                             subpixel positioning
-    0xf03a  CleartypeSymmetricalSmoothing  1 if ClearType's
-                                             symmetrical smoothing is on
-    0xf03b  CleartypeGrayRendering         1 if Gray ClearType is on
+    code  glyph name                     description
+   --------------------------------------------------------------------
+    0x30  PPEM                           the current PPEM value
+    0x31  ScalerVersion                  the hinting engine version
+    0x32  IsRotated                      1 if rotation is on
+    0x33  IsStretched                    1 if stretching is on
+    0x34  GrayscaleRendering             1 if grayscale rendering
+    0x35  CleartypeEnabled               1 if ClearType enabled
+    0x36  CleartypeCompatibleWidths      1 if ClearType's
+                                           compatible width mode is on
+    0x37  CleartypeVerticalLCD           1 if ClearType uses
+                                           vertical LCD subpixels
+    0x38  CleartypeBGRRendering          1 if ClearType uses BGR
+                                           rendering instead of RGB
+    0x39  CleartypeSubpixelPositioning   1 if ClearType uses
+                                           subpixel positioning
+    0x3a  CleartypeSymmetricalSmoothing  1 if ClearType's
+                                           symmetrical smoothing is on
+    0x3b  CleartypeGrayRendering         1 if Gray ClearType is on
 
 
 The `PPEM' glyph displays 1 to 5 digits, with the advance width properly
@@ -1241,7 +1241,7 @@ For shifting to the left, we use a threshold of 0.
   FUNCTION(ShiftPoints,
     PUSH[ ]
       glyph_offset
-      36 <!-- 00:10:0100 -->
+      36 # 00:10:0100
     SROUND[ ]
 
     RS[ ]
@@ -1263,7 +1263,7 @@ For shifting to the left, we use a threshold of 0.
     MDAP[1]
 
     PUSH[ ]
-      40 <!-- 00:10:1000 -->
+      40 # 00:10:1000
     SROUND[ ]
 
     PUSH[ ]
@@ -1958,24 +1958,24 @@ divert(0)
       <map code="0xfe" name=".notdef"/>
       <map code="0xff" name=".notdef"/>
     </cmap_format_6>
-    <cmap_format_4 platformID="3" platEncID="0" language="0">
-      <map code="0xf008" name=".null"/>
-      <map code="0xf009" name="nonmarkingreturn"/>
-      <map code="0xf00d" name="nonmarkingreturn"/>
-      <map code="0xf01d" name=".null"/>
-      <map code="0xf020" name="space"/>
-      <map code="0xf030" name="PPEM"/>
-      <map code="0xf031" name="ScalerVersion"/>
-      <map code="0xf032" name="IsRotated"/>
-      <map code="0xf033" name="IsStretched"/>
-      <map code="0xf034" name="GrayscaleRendering"/>
-      <map code="0xf035" name="CleartypeEnabled"/>
-      <map code="0xf036" name="CleartypeCompatibleWidths"/>
-      <map code="0xf037" name="CleartypeVerticalLCD"/>
-      <map code="0xf038" name="CleartypeBGRRendering"/>
-      <map code="0xf039" name="CleartypeSubpixelPositioning"/>
-      <map code="0xf03a" name="CleartypeSymmetricalSmoothing"/>
-      <map code="0xf03b" name="CleartypeGrayRendering"/>
+    <cmap_format_4 platformID="3" platEncID="1" language="0">
+      <map code="0x0008" name=".null"/>
+      <map code="0x0009" name="nonmarkingreturn"/>
+      <map code="0x000d" name="nonmarkingreturn"/>
+      <map code="0x001d" name=".null"/>
+      <map code="0x0020" name="space"/>
+      <map code="0x0030" name="PPEM"/>
+      <map code="0x0031" name="ScalerVersion"/>
+      <map code="0x0032" name="IsRotated"/>
+      <map code="0x0033" name="IsStretched"/>
+      <map code="0x0034" name="GrayscaleRendering"/>
+      <map code="0x0035" name="CleartypeEnabled"/>
+      <map code="0x0036" name="CleartypeCompatibleWidths"/>
+      <map code="0x0037" name="CleartypeVerticalLCD"/>
+      <map code="0x0038" name="CleartypeBGRRendering"/>
+      <map code="0x0039" name="CleartypeSubpixelPositioning"/>
+      <map code="0x003a" name="CleartypeSymmetricalSmoothing"/>
+      <map code="0x003b" name="CleartypeGrayRendering"/>
     </cmap_format_4>
   </cmap>
 
