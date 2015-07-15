@@ -1985,6 +1985,7 @@ divert(0)
     CVT(Elem_Length, sLENGTH)
     CVT(Left_Side_Bearing, sLSB)
     CVT(Right_Side_Bearing, sRSB)
+    CVT(Advance_Width, sADV_WIDTH)
     CVT(Horiz_Counter, sH_COUNTER)
     CVT(Vert_Counter, sV_COUNTER)
     CVT(No_Cleartype, 0)
@@ -2005,7 +2006,7 @@ divert(0)
         Elem_Length
         Left_Side_Bearing
         Right_Side_Bearing
-        Horiz_Counter
+        Advance_Width
         Vert_Counter
 
         6 RoundCvt
@@ -2022,6 +2023,33 @@ divert(0)
       <!-- recompute `Elem_Half_Thickness' -->
       RCVT[ ]
       MUL[ ] <!-- effectively divide by 2 -->
+      WCVTP[ ]
+
+      <!-- we derive the rounded `Horiz_Counter' value from other values
+           to minimize differences to the linear width -->
+      PUSH[ ]
+        Horiz_Counter
+        64 <!-- value 1 in 26.6 notation -->
+        Advance_Width
+      RCVT[ ]
+
+      PUSH[ ]
+        Left_Side_Bearing
+      RCVT[ ]
+      PUSH[ ]
+        Right_Side_Bearing
+      RCVT[ ]
+      ADD[ ]
+
+      PUSH[ ]
+        Elem_Thickness
+      RCVT[ ]
+      DUP[ ]
+      ADD[ ]
+
+      ADD[ ]
+      SUB[ ]
+      MAX[ ]
       WCVTP[ ]
 
       PUSH[ ]
