@@ -1988,7 +1988,6 @@ divert(0)
     CVT(Glyph_Height, sHEIGHT)
     CVT(Horiz_Counter, sH_COUNTER)
     CVT(Vert_Counter, sV_COUNTER)
-    CVT(No_Cleartype, 0)
   </cvt>
 
   <prep>
@@ -2089,22 +2088,18 @@ divert(0)
         1
       GETINFO[ ] <!-- if we have at least version 37 ... -->
       LTEQ[ ]
-      PUSH[ ]
-        64
-        1
-      GETINFO[ ] <!-- ... and ClearType is enabled, ... -->
-      GTEQ[ ]
-      AND[ ]
       IF[ ]
         PUSH[ ]
-          4
-          3
-        INSTCTRL[ ] <!-- ... activate native ClearType mode -->
-      ELSE[ ]
-        PUSH[ ]
-          No_Cleartype
+          64
           1
-        WCVTP[ ]
+        GETINFO[ ] <!-- ... and ClearType is enabled, ... -->
+        GTEQ[ ]
+        IF[ ]
+          PUSH[ ]
+            4
+            3
+          INSTCTRL[ ] <!-- ... activate native ClearType mode -->
+        EIF[ ]
       EIF[ ]
     </assembly>
   </prep>
