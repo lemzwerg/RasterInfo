@@ -261,6 +261,15 @@ In the above sketch of the complete glyph, placeholder point indices are
 shown at the very right.
 
 
+Subpixel positioning and advance width
+--------------------------------------
+
+The Windows bytecode engine doesn't allow modification of the advance width
+if subpixel hinting is active.  For this reason, the previously mentioned
+adjustment of the shown number of digits per glyph and its advance width is
+enabled for non-subpixel hinting only.
+
+
 Naming conventions
 ------------------
 
@@ -753,7 +762,7 @@ too.
 Contrary to the point array reading macro `POINT' we can't use `defn' this
 time: We need another round of macro expansion to resolve forward
 references.  While outputting the function data, we add four leading spaces
-to get nice the XML formatting.
+to get nice XML formatting.
 
   define({GET_FUNCTION},
     {patsubst(indir(format({{function[%d]}},
@@ -1388,102 +1397,129 @@ Split `num' into decimal digits and display them.
     LOOPCALL[ ]
     POP[ ] # clean up stack
 
-    # we have to determine the number of digits,
-    # since we split off digits at the right side
-    DUP[ ]
+    # check whether we use subpixel hinting
     PUSH[ ]
-      10
-    LT[ ]
-    IF[ ] # num < 10 ?
-      PUSH[ ]
-        1 # 1 digit
-        eval(0 * NUM_POINTS) # offset
-    ELSE[ ]
+      Subpixel_Cleartype
+    RCVT[ ]
+    IF[ ]
+      # yes, set up everything for using all available digits
+      SWAP[ ]
       DUP[ ]
       PUSH[ ]
-        100
+        1
+      ADD[ ] # digits = num_subglyphs + 1
+      SWAP[ ]
+      PUSH[ ]
+        1
+      SUB[ ]
+      PUSH[ ]
+        eval(NUM_POINTS * 64)
+      MUL[ ] # s: offset digits num
+
+      PUSH[ ]
+        glyph_offset
+      SWAP[ ]
+      WS[ ] # storage[glyph_offset] = offset
+    ELSE[ ]
+      # If subpixel hinting is disabled (or not available) we have to
+      # determine the number of digits, since we split off digits at the
+      # right side.
+      DUP[ ]
+      PUSH[ ]
+        10
       LT[ ]
-      IF[ ] # num < 100 ?
+      IF[ ] # num < 10 ?
         PUSH[ ]
-          2 # 2 digits
-          eval(1 * NUM_POINTS) # offset
+          1 # 1 digit
+          eval(0 * NUM_POINTS) # offset
       ELSE[ ]
         DUP[ ]
         PUSH[ ]
-          1000
+          100
         LT[ ]
-        IF[ ] # num < 1000 ?
+        IF[ ] # num < 100 ?
           PUSH[ ]
-            3 # 3 digits
-            eval(2 * NUM_POINTS) # offset
+            2 # 2 digits
+            eval(1 * NUM_POINTS) # offset
         ELSE[ ]
           DUP[ ]
           PUSH[ ]
-            10000
+            1000
           LT[ ]
-          IF[ ] # num < 10000 ?
+          IF[ ] # num < 1000 ?
             PUSH[ ]
-              4 # 4 digits
-              eval(3 * NUM_POINTS) # offset
+              3 # 3 digits
+              eval(2 * NUM_POINTS) # offset
           ELSE[ ]
+            DUP[ ]
             PUSH[ ]
-              5 # 5 digits
-              eval(4 * NUM_POINTS) # offset
+              10000
+            LT[ ]
+            IF[ ] # num < 10000 ?
+              PUSH[ ]
+                4 # 4 digits
+                eval(3 * NUM_POINTS) # offset
+            ELSE[ ]
+              PUSH[ ]
+                5 # 5 digits
+                eval(4 * NUM_POINTS) # offset
+            EIF[ ]
           EIF[ ]
         EIF[ ]
       EIF[ ]
+
+      PUSH[ ]
+        glyph_offset
+      SWAP[ ]
+      WS[ ] # storage[glyph_offset] = offset
+
+      # s: digits num num_subglyphs
+      #
+      # Depending on `num', we have a different number of digits, and we
+      # want to accomodate the advance width accordingly by shifting phantom
+      # point `n+1' (where `n' is the number points in the glyph).  The
+      # `digit' bytecode positions the alignment points `P_00', `P_000',
+      # etc., of the first subglyph to the correct values; it is thus
+      # sufficient to select the right one.
+      #
+      ROLL[ ] # s: num_subglyphs digits num
+      PUSH[ ]
+        eval(NUM_POINTS * 64)
+      MUL[ ]
+      PUSH[ ]
+        1
+      ADD[ ] # s: P_right=NUM_POINTS*num_subglyphs+1 digits num
+
+      PUSH[ ]
+        eval(P_00 - 1)
+        3
+      CINDEX[ ]
+      ADD[ ] # s: P_00+ P_right digits num
+
+      # It would be natural now to use ALIGNRP or MSIRP for aligning the
+      # phantom point with the alignment point.  However, both bytecode
+      # operators might not work as expected in ClearType due to backwards
+      # compatibility quirks, making the hinting engine completely ignore
+      # those instructions along the horizontal direction.  In particular,
+      # this affects FreeType before release 2.6.0, which doesn't support
+      # native ClearType mode (i.e., setting INSTCTRL's flag 3).
+      #
+      # For this reason we fall back to the ISECT operator, which doesn't
+      # have this limitation.  This instruction moves a point to the
+      # intersection of two lines: For the first line we use the alignment
+      # point itself, together with the topmost placeholder point.  The
+      # other line we define by P_0 and again the alignment point.
+      #
+      DUP[ ]
+      PUSH[ ]
+        P_0
+      SWAP[ ] # s: P_00+ P_0 P_00+ P_right digits num
+      PUSH[ ]
+        eval(NUM_PLACEHOLDERS - 1) # last, topmost placeholder point
+      SVTCA[1] # we shift the phantom point horizontally
+      ISECT[ ]
+      SVTCA[0] # for the rest we work along the vertical axis
     EIF[ ]
-
-    PUSH[ ]
-      glyph_offset
-    SWAP[ ]
-    WS[ ] # storage[glyph_offset] = offset
-
-    # s: digits num num_subglyphs
-    #
-    # Depending on `num', we have a different number of digits, and we want
-    # to accomodate the advance width accordingly by shifting phantom point
-    # `n+1' (where `n' is the number points in the glyph).  The `digit'
-    # bytecode positions the alignment points `P_00', `P_000', etc., of the
-    # first subglyph to the correct values; it is thus sufficient to select
-    # the right one.
-    #
-    ROLL[ ] # s: num_subglyphs digits num
-    PUSH[ ]
-      eval(NUM_POINTS * 64)
-    MUL[ ]
-    PUSH[ ]
-      1
-    ADD[ ] # s: P_right=NUM_POINTS*num_subglyphs+1 digits num
-
-    PUSH[ ]
-      eval(P_00 - 1)
-      3
-    CINDEX[ ]
-    ADD[ ] # s: P_00+ P_right digits num
-
-    # It would be natural now to use ALIGNRP or MSIRP for aligning the
-    # phantom point with the alignment point.  However, both bytecode
-    # operators might not work as expected in ClearType due to backwards
-    # compatibility quirks, making the hinting engine completely ignore
-    # those instructions along the horizontal direction.  In particular,
-    # this affects FreeType before release 2.6.0, which doesn't support
-    # native ClearType mode (i.e., setting INSTCTRL's flag 3).
-    #
-    # For this reason we fall back to the ISECT operator, which doesn't have
-    # this limitation.  This instruction moves a point to the intersection
-    # of two lines: For the first line we use the alignment point itself,
-    # together with the topmost placeholder point.  The other line we define
-    # by P_0 and again the alignment point.
-    DUP[ ]
-    PUSH[ ]
-      P_0
-    SWAP[ ] # s: P_00+ P_0 P_00+ P_right digits num
-    PUSH[ ]
-      eval(NUM_PLACEHOLDERS - 1) # last, topmost placeholder point
-    SVTCA[1] # we shift the phantom point horizontally
-    ISECT[ ]
-    SVTCA[0] # for the rest we work along the vertical axis
 
     # s: digits num
     PUSH[ ]
@@ -1988,6 +2024,7 @@ divert(0)
     CVT(Glyph_Height, sHEIGHT)
     CVT(Horiz_Counter, sH_COUNTER)
     CVT(Vert_Counter, sV_COUNTER)
+    CVT(Subpixel_Cleartype, 0)
   </cvt>
 
   <prep>
@@ -2099,6 +2136,24 @@ divert(0)
             4
             3
           INSTCTRL[ ] <!-- ... activate native ClearType mode -->
+        EIF[ ]
+      EIF[ ]
+
+      PUSH[ ]
+        38
+        1
+      GETINFO[ ] <!-- if we have at least version 38 ... -->
+      LTEQ[ ]
+      IF[ ]
+        PUSH[ ]
+          1024
+          1
+        GETINFO[ ] <!-- ... check whether subpixel positioning is active -->
+        IF[ ]
+          PUSH[ ]
+            Subpixel_Cleartype
+            1
+          WCVTP[ ]
         EIF[ ]
       EIF[ ]
     </assembly>
