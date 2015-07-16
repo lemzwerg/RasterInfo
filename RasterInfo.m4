@@ -1982,7 +1982,6 @@ divert(0)
   <cvt>
     CVT(Elem_Thickness, sTHICKNESS)
     CVT(Elem_Half_Thickness, eval(sTHICKNESS / 2))
-    CVT(Elem_Length, sLENGTH)
     CVT(Left_Side_Bearing, sLSB)
     CVT(Right_Side_Bearing, sRSB)
     CVT(Advance_Width, sADV_WIDTH)
@@ -2003,13 +2002,12 @@ divert(0)
         Elem_Thickness
 
         Elem_Thickness
-        Elem_Length
         Left_Side_Bearing
         Right_Side_Bearing
         Advance_Width
         Vert_Counter
 
-        6 RoundCvt
+        5 RoundCvt
 
         0
         2
@@ -2528,11 +2526,11 @@ ALIGNMENTS()dnl
             P_12
             Elem_Thickness
             P_10
-            Elem_Length
+            Vert_Counter
             P_7
             Elem_Thickness
             P_5
-            Elem_Length
+            Vert_Counter
             P_2
             Elem_Thickness
 
