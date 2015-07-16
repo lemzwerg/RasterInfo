@@ -1985,6 +1985,7 @@ divert(0)
     CVT(Left_Side_Bearing, sLSB)
     CVT(Right_Side_Bearing, sRSB)
     CVT(Advance_Width, sADV_WIDTH)
+    CVT(Glyph_Height, sHEIGHT)
     CVT(Horiz_Counter, sH_COUNTER)
     CVT(Vert_Counter, sV_COUNTER)
     CVT(No_Cleartype, 0)
@@ -2005,7 +2006,7 @@ divert(0)
         Left_Side_Bearing
         Right_Side_Bearing
         Advance_Width
-        Vert_Counter
+        Glyph_Height
 
         5 RoundCvt
 
@@ -2048,6 +2049,39 @@ divert(0)
       ADD[ ]
       SUB[ ]
       MAX[ ]
+      WCVTP[ ]
+
+      <!-- we derive the rounded `Vert_Counter' value from other values
+           to minimize differences to the linear glyph height -->
+      PUSH[ ]
+        Vert_Counter
+        32
+        128 <!-- value 2 in 26.6 notation -->
+        Glyph_Height
+      RCVT[ ]
+
+      PUSH[ ]
+        Elem_Thickness
+      RCVT[ ]
+      DUP[ ]
+      DUP[ ]
+      ADD[ ]
+      ADD[ ]
+
+      SUB[ ]
+      MAX[ ]
+
+      <!-- `Glyph_Height - 3*Elem_Thickness' must be even
+           so that we get an integer as the result of the division by 2 -->
+      DUP[ ]
+      ODD[ ]
+      IF[ ]
+        PUSH[ ]
+          64
+        ADD[ ]
+      EIF[ ]
+
+      MUL[ ] <!-- effectively divide by 2 -->
       WCVTP[ ]
 
       PUSH[ ]
