@@ -289,8 +289,9 @@ The following conventions for names are used.
     point in element 2 is `P_1_3' (since both indices and elements start
     with value 0).
 
-  . For positioning the subglyphs we need alignment points: `P_0' (this is
-    the first placeholder point), `P_00', `P_000', `P_0000', and `P_00000'.
+  . For positioning subglyphs and adjusting the advance width we need
+    alignment points: `P_0' (this is the first placeholder point), `P_00',
+    `P_000', `P_0000', `P_00000', and `P_000000'.
 
 Note that point names refer to the `digit' glyph, not to the glyph indices
 in the composite glyphs.
@@ -621,7 +622,7 @@ the `ALIGNMENTS' macro to emit the corresponding XML code.
   sdefine({ALIGNMENTS})
   FORLOOP({i_},
           1,
-          eval(NUM_SUBGLYPHS - 1),
+          eval(NUM_SUBGLYPHS),
           {CONCAT({define({TEMP},
                      defn({TEMP})0)},
                   {define(TEMP,
@@ -662,7 +663,7 @@ Number of points
 We are now able to compute the number of points of the digit glyph.
 
   define({NUM_POINTS},
-    eval(NUM_PLACEHOLDERS + NUM_ELEM * ELEM_SIZE + NUM_SUBGLYPHS - 1))
+    eval(NUM_PLACEHOLDERS + NUM_ELEM * ELEM_SIZE + NUM_SUBGLYPHS))
 
 
 The outlines
@@ -1570,7 +1571,7 @@ Reset vertical coordinate of all elements to zero.
     LOOPCALL[ ]
 
     PUSH[ ]
-      eval(NUM_SUBGLYPHS - 1)
+      eval(NUM_SUBGLYPHS)
     ADD[ ]
   )
 
@@ -2598,10 +2599,16 @@ ALIGNMENTS()dnl
           SWAP[ ]
           MSIRP[1] <!-- align P_0000 and set rp0 -->
 
+          DUP[ ]
           PUSH[ ]
             P_00000
           SWAP[ ]
-          MSIRP[0] <!-- align P_00000 -->
+          MSIRP[1] <!-- align P_00000 and set rp0 -->
+
+          PUSH[ ]
+            P_000000
+          SWAP[ ]
+          MSIRP[0] <!-- align P_000000 -->
 
           SVTCA[0] <!-- work along the vertical axis -->
 
