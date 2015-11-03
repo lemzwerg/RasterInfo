@@ -300,6 +300,10 @@ in the composite glyphs.
 Global setup
 ------------
 
+The font version.
+
+  define({VERSION}, 1.01)
+
 We use 2048 units per EM.
 
   define({UPEM}, 2048)
@@ -1633,7 +1637,7 @@ divert(0)
 
   <head>
     <tableVersion value="1.0"/>
-    <fontRevision value="1.0"/>
+    <fontRevision value="VERSION"/>
     <checkSumAdjustment value="0"/>
     <magicNumber value="0x5f0f3cf5"/>
     <flags value="00000000 00011111"/>
@@ -2697,13 +2701,13 @@ ALIGNMENTS()dnl
       Regular
     </namerecord>
     <namerecord nameID="3" platformID="1" platEncID="0" langID="0x0" unicode="True">
-      RasterInfo: Version 1.00
+      RasterInfo: Version VERSION
     </namerecord>
     <namerecord nameID="4" platformID="1" platEncID="0" langID="0x0" unicode="True">
       RasterInfo
     </namerecord>
     <namerecord nameID="5" platformID="1" platEncID="0" langID="0x0" unicode="True">
-      Version 1.00
+      Version VERSION
     </namerecord>
     <namerecord nameID="6" platformID="1" platEncID="0" langID="0x0" unicode="True">
       RasterInfo
@@ -2729,13 +2733,13 @@ The license text is available with a FAQ at "http://scripts.sil.org/OFL".
       Regular
     </namerecord>
     <namerecord nameID="3" platformID="3" platEncID="1" langID="0x409">
-      RasterInfo: Version 1.00
+      RasterInfo: Version VERSION
     </namerecord>
     <namerecord nameID="4" platformID="3" platEncID="1" langID="0x409">
       RasterInfo
     </namerecord>
     <namerecord nameID="5" platformID="3" platEncID="1" langID="0x409">
-      Version 1.00
+      Version VERSION
     </namerecord>
     <namerecord nameID="6" platformID="3" platEncID="1" langID="0x409">
       RasterInfo
