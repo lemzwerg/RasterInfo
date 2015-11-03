@@ -1404,18 +1404,14 @@ Split `num' into decimal digits and display them.
     RCVT[ ]
     IF[ ]
       # yes, set up everything for using all available digits
-      SWAP[ ]
-      DUP[ ]
-      PUSH[ ]
-        1
-      ADD[ ] # digits = num_subglyphs + 1
-      SWAP[ ]
+      SWAP[ ] # s: num_subglyphs num
+      DUP[ ] # s: num_subglyphs num_subglyphs num
       PUSH[ ]
         1
       SUB[ ]
       PUSH[ ]
         eval(NUM_POINTS * 64)
-      MUL[ ] # s: offset digits num
+      MUL[ ] # s: offset num_subglyphs num
 
       PUSH[ ]
         glyph_offset
@@ -1694,11 +1690,11 @@ divert(0)
     <yStrikeoutPosition value="0"/>
     <sFamilyClass value="3072"/> <!-- 0x0C00 -->
     <panose>
-      <bFamilyType value="5"/>
+      <bFamilyType value="0"/>
       <bSerifStyle value="0"/>
-      <bWeight value="1"/>
+      <bWeight value="0"/>
       <bProportion value="0"/>
-      <bContrast value="1"/>
+      <bContrast value="0"/>
       <bStrokeVariation value="0"/>
       <bArmStyle value="0"/>
       <bLetterForm value="0"/>
@@ -1711,14 +1707,14 @@ divert(0)
     <ulUnicodeRange4 value="00000000 00000000 00000000 00000000"/>
     <achVendID value="XXXX"/>
     <fsSelection value="00000000 01000000"/>
-    <fsFirstCharIndex value="61472"/> <!-- 0xf020 -->
-    <fsLastCharIndex value="61497"/> <!-- 0xf39 -->
+    <fsFirstCharIndex value="8"/>
+    <fsLastCharIndex value="59"/> <!-- 0x3b -->
     <sTypoAscender value="eval(sHEIGHT + sEXTRA_HEIGHT)"/>
     <sTypoDescender value="0"/>
     <sTypoLineGap value="eval(UPEM - sHEIGHT - sEXTRA_HEIGHT)"/> <!-- ascender + descender + linegap = unitsPerEm -->
     <usWinAscent value="eval(sHEIGHT + sEXTRA_HEIGHT)"/>
     <usWinDescent value="0"/>
-    <ulCodePageRange1 value="10000000 00000000 00000000 00000000"/> <!-- symbol font -->
+    <ulCodePageRange1 value="00000000 00000000 00000000 00000000"/>
     <ulCodePageRange2 value="00000000 00000000 00000000 00000000"/>
   </OS_2>
 
@@ -2148,7 +2144,6 @@ divert(0)
       IF[ ]
         PUSH[ ]
           1024
-          1
         GETINFO[ ] <!-- ... check whether subpixel positioning is active -->
         IF[ ]
           PUSH[ ]
