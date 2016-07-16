@@ -1711,8 +1711,8 @@ divert(0)
     <ulUnicodeRange4 value="00000000 00000000 00000000 00000000"/>
     <achVendID value="XXXX"/>
     <fsSelection value="00000000 01000000"/>
-    <fsFirstCharIndex value="8"/>
-    <fsLastCharIndex value="59"/> <!-- 0x3b -->
+    <usFirstCharIndex value="8"/>
+    <usLastCharIndex value="59"/> <!-- 0x3b -->
     <sTypoAscender value="eval(sHEIGHT + sEXTRA_HEIGHT)"/>
     <sTypoDescender value="0"/>
     <sTypoLineGap value="eval(UPEM - sHEIGHT - sEXTRA_HEIGHT)"/> <!-- ascender + descender + linegap = unitsPerEm -->
