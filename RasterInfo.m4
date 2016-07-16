@@ -1726,12 +1726,12 @@ divert(0)
   <hmtx>
     <mtx name=".notdef" width="sADV_WIDTH" lsb="0"/>
     <mtx name=".null" width="0" lsb="0"/>
+    <mtx name="CleartypeBGRRendering" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeCompatibleWidths" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeEnabled" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeGrayRendering" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeSubpixelPositioning" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeSymmetricalSmoothing" width="sADV_WIDTH" lsb="0"/>
-    <mtx name="CleartypeBGRRendering" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeVerticalLCD" width="sADV_WIDTH" lsb="0"/>
     <mtx name="GrayscaleRendering" width="sADV_WIDTH" lsb="0"/>
     <mtx name="IsRotated" width="sADV_WIDTH" lsb="0"/>
@@ -2178,6 +2178,39 @@ ELEM_3()dnl
 
     <TTGlyph name=".null"/><!-- contains no outline data -->
 
+    <TTGlyph name="CleartypeBGRRendering" xMin="0" yMin="0" xMax="0" yMax="0">
+      <component glyphName="digit" x="0" y="0" flags="0x0"/>
+      <instructions>
+        <assembly>
+          PUSH[ ]
+            1 <!-- 1 digit to display -->
+            37 <!-- this test needs at least version 37 -->
+            1
+          GETINFO[ ]
+          LTEQ[ ]
+          IF[ ]
+            PUSH[ ]
+              512 <!-- selector bit 9 -->
+            GETINFO[ ]
+            IF[ ]
+              PUSH[ ]
+                1
+            ELSE[ ]
+              PUSH[ ]
+                0
+            EIF[ ]
+          ELSE[ ]
+            PUSH[ ]
+              0
+          EIF[ ]
+
+          PUSH[ ]
+            HandleNumber
+          CALL[ ]
+        </assembly>
+      </instructions>
+    </TTGlyph>
+
     <TTGlyph name="CleartypeCompatibleWidths" xMin="0" yMin="0" xMax="0" yMax="0">
       <component glyphName="digit" x="0" y="0" flags="0x0"/>
       <instructions>
@@ -2329,39 +2362,6 @@ ELEM_3()dnl
           IF[ ]
             PUSH[ ]
               2048 <!-- selector bit 11 -->
-            GETINFO[ ]
-            IF[ ]
-              PUSH[ ]
-                1
-            ELSE[ ]
-              PUSH[ ]
-                0
-            EIF[ ]
-          ELSE[ ]
-            PUSH[ ]
-              0
-          EIF[ ]
-
-          PUSH[ ]
-            HandleNumber
-          CALL[ ]
-        </assembly>
-      </instructions>
-    </TTGlyph>
-
-    <TTGlyph name="CleartypeBGRRendering" xMin="0" yMin="0" xMax="0" yMax="0">
-      <component glyphName="digit" x="0" y="0" flags="0x0"/>
-      <instructions>
-        <assembly>
-          PUSH[ ]
-            1 <!-- 1 digit to display -->
-            37 <!-- this test needs at least version 37 -->
-            1
-          GETINFO[ ]
-          LTEQ[ ]
-          IF[ ]
-            PUSH[ ]
-              512 <!-- selector bit 9 -->
             GETINFO[ ]
             IF[ ]
               PUSH[ ]
