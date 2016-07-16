@@ -38,14 +38,14 @@ We use { and } as M4 quote characters.
 The `RasterInfo' TrueType font
 ==============================
 
-This file defines a TrueType font called `RasterInfo.ttf'.  It contains a
-small set of characters mapped to the character codes 0x30-0x3b (i.e.,
-digits 0-9, `:', and `;').  Both a Macintosh 1/0 and a Microsoft 4/3 cmap
-are present.
+This file defines a TrueType font called `RasterInfo.ttf'.  It contains two
+sets of characters mapped to the character codes: 0x30-0x3b (i.e.,
+digits 0-9, `:', and `;') and 0x23-0x25 (`#', `$', and `%').  Both a
+Macintosh 1/0 and a Microsoft 4/3 cmap are present.
 
-If a TrueType bytecode interpreter is active, the characters return various
-information on the rasterizer, using output of the `GETINFO' bytecode
-instruction.
+If a TrueType bytecode interpreter is active, the characters of the first
+set return various information on the rasterizer, using output of the
+`GETINFO' bytecode instruction.
 
 
     code  glyph name                     description
@@ -78,6 +78,20 @@ described feature is active or not.
 
 If any of the above characters is viewed without activated TrueType bytecode
 hinting, one or more `E' glyphs (representing `Error') are shown.
+
+The characters of the second set help find more information on the LCD
+rendering and how it gets filtered.  They are also useful to set up a
+correct value for display gamma correction.  Essentially, the characters
+consist of slightly slanted zebra patterns; you have to view these glyphs at
+a size of 96ppem (to be more precise, a multiple of 32ppem like 128ppem will
+work also, but not as good as 96ppem).
+
+
+    code  glyph name    stripe thickness  distance between stripes
+   ----------------------------------------------------------------
+    0x23  Black6White6  6 units           6 units
+    0x24  Black5White7  5 units           7 units
+    0x25  Black7White5  7 units           5 units
 
 
 The scaler version
@@ -168,8 +182,8 @@ FreeType doesn't provide all capabilities of the most recent ClearType
 incarnation, thus its subpixel support is tagged as version~38.
 
 
-The glyph shape
----------------
+The info glyph shape
+--------------------
 
 We construct a digit glyph as in the sketch below.
 
@@ -270,6 +284,43 @@ adjustment of the shown number of digits per glyph and its advance width is
 enabled for non-subpixel hinting only.
 
 
+The LCD test glyph shape
+------------------------
+
+This is the shape for `Black6White6', with 32 stripes.
+
+
+                                       3 3 3 3 3
+                   1 1 2 3 3           6 6 7 7 8
+                   2 8 4 0 6           0 6 2 8 4
+
+    384            ++  ++  ++   ....   ++  ++  ++
+    372           //  //  //          //  //  //
+    360          //  //  //          //  //  //
+      .         ..  ..  ..          ..  ..  ..
+      .         0   1   2          29  30  31
+      .       ..  ..  ..          ..  ..  ..
+     18      //  //  //          //  //  //
+     12     //  //  //          //  //  //
+      6    //  //  //          //  //  //
+      0   ++  ++  ++   ....   ++  ++  ++
+
+          0 6 1 1 2           3 3 3 3 3
+              2 8 4           4 5 6 6 7
+                              8 4 0 6 2
+
+
+For `Black5White7' and `Black7White5' the interval series is
+
+  0, 5, 12, 17, 24, ...
+
+and
+
+  0, 7, 12, 19, 24, ...   ,
+
+respectively.  Value 384 gets then mapped to the number of units per EM.
+
+
 Naming conventions
 ------------------
 
@@ -302,7 +353,7 @@ Global setup
 
 The font version.
 
-  define({VERSION}, 1.01)
+  define({VERSION}, 1.02)
 
 We use 2048 units per EM.
 
@@ -724,6 +775,60 @@ harmonizes with other fonts.
 
   define({EXTRA_HEIGHT}, 4)
   define({sEXTRA_HEIGHT}, eval(SCALE * EXTRA_HEIGHT))
+
+
+The ZEBRA macros
+----------------
+
+The zebra patterns consist of a series of stripes.  The macros below call
+elements 0, 1, 2, ..., NUM_STRIPES.
+
+  define({NUM_STRIPES}, 32)
+  define({STRIPE_OFFSET}, 12)
+  define({STRIPE_HEIGHT}, eval(NUM_STRIPES * STRIPE_OFFSET))
+
+  define({BLACK_WIDTH_1}, 6)
+  define({BLACK_WIDTH_2}, 5)
+  define({BLACK_WIDTH_3}, 7)
+
+  sdefine({ZEBRA_1},
+    {FORLOOP({i_},
+             0,
+             eval(NUM_STRIPES - 1),
+             {STRIPE(BLACK_WIDTH_1, i_)})})
+  sdefine({ZEBRA_2},
+    {FORLOOP({i_},
+             0,
+             eval(NUM_STRIPES - 1),
+             {STRIPE(BLACK_WIDTH_2, i_)})})
+  sdefine({ZEBRA_3},
+    {FORLOOP({i_},
+             0,
+             eval(NUM_STRIPES - 1),
+             {STRIPE(BLACK_WIDTH_3, i_)})})
+
+We need a small auxiliary macro to convert the coordinate values used in the
+sketch above to font units.
+
+  define({FU}, {eval(($1 * UPEM + STRIPE_HEIGHT / 2) / STRIPE_HEIGHT)})
+
+Now the definition of the `STRIPE' macro is straightforward.
+
+  define({STRIPE},
+    {CONCAT({      <contour>NL},
+            {format({        <pt x="%d" y="%d" on="1"/>NL},
+                    FU({eval(STRIPE_OFFSET * $2)}),
+                    0)},
+            {format({        <pt x="%d" y="%d" on="1"/>NL},
+                    FU({eval(STRIPE_OFFSET * ($2 + 1))}),
+                    FU(STRIPE_HEIGHT))},
+            {format({        <pt x="%d" y="%d" on="1"/>NL},
+                    FU({eval($1 + STRIPE_OFFSET * ($2 + 1))}),
+                    FU(STRIPE_HEIGHT))},
+            {format({        <pt x="%d" y="%d" on="1"/>NL},
+                    FU({eval($1 + STRIPE_OFFSET * $2)}),
+                    0)},
+            {      </contour>NL})})
 
 
 Bytecode support
@@ -1633,6 +1738,9 @@ divert(0)
     <GlyphID name="CleartypeSubpixelPositioning"/>
     <GlyphID name="CleartypeSymmetricalSmoothing"/>
     <GlyphID name="CleartypeGrayRendering"/>
+    <GlyphID name="Black6White6"/>
+    <GlyphID name="Black5White7"/>
+    <GlyphID name="Black7White5"/>
   </GlyphOrder>
 
   <head>
@@ -1726,6 +1834,9 @@ divert(0)
   <hmtx>
     <mtx name=".notdef" width="sADV_WIDTH" lsb="0"/>
     <mtx name=".null" width="0" lsb="0"/>
+    <mtx name="Black5White7" width="UPEM" lsb="0"/>
+    <mtx name="Black6White6" width="UPEM" lsb="0"/>
+    <mtx name="Black7White5" width="UPEM" lsb="0"/>
     <mtx name="CleartypeBGRRendering" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeCompatibleWidths" width="sADV_WIDTH" lsb="0"/>
     <mtx name="CleartypeEnabled" width="sADV_WIDTH" lsb="0"/>
@@ -1773,9 +1884,9 @@ divert(0)
       <map code="0x20" name="space"/>
       <map code="0x21" name=".notdef"/>
       <map code="0x22" name=".notdef"/>
-      <map code="0x23" name=".notdef"/>
-      <map code="0x24" name=".notdef"/>
-      <map code="0x25" name=".notdef"/>
+      <map code="0x23" name="Black6White6"/>
+      <map code="0x24" name="Black5White7"/>
+      <map code="0x25" name="Black7White5"/>
       <map code="0x26" name=".notdef"/>
       <map code="0x27" name=".notdef"/>
       <map code="0x28" name=".notdef"/>
@@ -2001,6 +2112,9 @@ divert(0)
       <map code="0x000d" name="nonmarkingreturn"/>
       <map code="0x001d" name=".null"/>
       <map code="0x0020" name="space"/>
+      <map code="0x0023" name="Black6White6"/>
+      <map code="0x0023" name="Black5White7"/>
+      <map code="0x0023" name="Black7White5"/>
       <map code="0x0030" name="PPEM"/>
       <map code="0x0031" name="ScalerVersion"/>
       <map code="0x0032" name="IsRotated"/>
@@ -2177,6 +2291,25 @@ ELEM_3()dnl
     </TTGlyph>
 
     <TTGlyph name=".null"/><!-- contains no outline data -->
+
+    <!-- the zebra glyphs -->
+    <TTGlyph name="Black5White7" xMin="0" yMin="0" xMax="0" yMax="0">
+ZEBRA_2()dnl
+      <instructions><assembly>
+        </assembly></instructions>
+    </TTGlyph>
+
+    <TTGlyph name="Black6White6" xMin="0" yMin="0" xMax="0" yMax="0">
+ZEBRA_1()dnl
+      <instructions><assembly>
+        </assembly></instructions>
+    </TTGlyph>
+
+    <TTGlyph name="Black7White5" xMin="0" yMin="0" xMax="0" yMax="0">
+ZEBRA_3()dnl
+      <instructions><assembly>
+        </assembly></instructions>
+    </TTGlyph>
 
     <TTGlyph name="CleartypeBGRRendering" xMin="0" yMin="0" xMax="0" yMax="0">
       <component glyphName="digit" x="0" y="0" flags="0x0"/>
