@@ -2113,8 +2113,8 @@ divert(0)
       <map code="0x001d" name=".null"/>
       <map code="0x0020" name="space"/>
       <map code="0x0023" name="Black6White6"/>
-      <map code="0x0023" name="Black5White7"/>
-      <map code="0x0023" name="Black7White5"/>
+      <map code="0x0024" name="Black5White7"/>
+      <map code="0x0025" name="Black7White5"/>
       <map code="0x0030" name="PPEM"/>
       <map code="0x0031" name="ScalerVersion"/>
       <map code="0x0032" name="IsRotated"/>
