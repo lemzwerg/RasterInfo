@@ -83,8 +83,8 @@ The characters of the second set help find more information on the LCD
 rendering and how it gets filtered.  They are also useful to set up a
 correct value for display gamma correction.  Essentially, the characters
 consist of slightly slanted zebra patterns; you have to view these glyphs at
-a size of 96ppem (to be more precise, a multiple of 32ppem like 128ppem will
-work also, but not as good as 96ppem).
+a size of 128ppem (to be more precise, multiples of 32ppem like 96ppem will
+work also, but not as good as 128ppem).
 
 
     code  glyph name    stripe thickness  distance between stripes
