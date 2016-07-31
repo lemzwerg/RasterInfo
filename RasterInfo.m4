@@ -359,6 +359,11 @@ We use 2048 units per EM.
 
   define({UPEM}, 2048)
 
+Similar to CJK characters, we set the descender of the zebra patterns to 20%
+of the total height.
+
+  define({ZEBRA_DESCENDER}, UPEM / 5)
+
 The thickness (which must be an even value because we need its half also)
 and the length of an element.
 
@@ -818,16 +823,16 @@ Now the definition of the `STRIPE' macro is straightforward.
     {CONCAT({      <contour>NL},
             {format({        <pt x="%d" y="%d" on="1"/>NL},
                     FU({eval(STRIPE_OFFSET * $2)}),
-                    0)},
+                    eval(-ZEBRA_DESCENDER))},
             {format({        <pt x="%d" y="%d" on="1"/>NL},
                     FU({eval(STRIPE_OFFSET * ($2 + 1))}),
-                    FU(STRIPE_HEIGHT))},
+                    eval(FU({eval(STRIPE_HEIGHT)}) - ZEBRA_DESCENDER))},
             {format({        <pt x="%d" y="%d" on="1"/>NL},
                     FU({eval($1 + STRIPE_OFFSET * ($2 + 1))}),
-                    FU(STRIPE_HEIGHT))},
+                    eval(FU({eval(STRIPE_HEIGHT)}) - ZEBRA_DESCENDER))},
             {format({        <pt x="%d" y="%d" on="1"/>NL},
                     FU({eval($1 + STRIPE_OFFSET * $2)}),
-                    0)},
+                    eval(-ZEBRA_DESCENDER))},
             {      </contour>NL})})
 
 
