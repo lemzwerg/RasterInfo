@@ -25,7 +25,8 @@ Create the output file `RasterInfo.xml' with
   m4 < RasterInfo.m4 > RasterInfo.xml
 
 which in turn can be converted to a TrueType font `RasterInfo.ttf' with the
-TrueType assembler from the `fonttools' package.
+TrueType assembler from the `fonttools' package.  The used ttx version for
+development was 3.15.2.
 
   ttx RasterInfo.xml
 
@@ -1763,7 +1764,7 @@ divert(0)
   </head>
 
   <hhea>
-    <tableVersion value="1.0"/>
+    <tableVersion value="0x00010000"/>
     <ascent value="eval(sHEIGHT + sEXTRA_HEIGHT)"/>
     <descent value="0"/>
     <lineGap value="eval(UPEM - sHEIGHT - sEXTRA_HEIGHT)"/> <!-- ascent + descent + lineGap = unitsPerEm -->
