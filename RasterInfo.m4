@@ -83,8 +83,8 @@ The characters of the second set help find more information on the LCD
 rendering and how it gets filtered.  They are also useful to set up a
 correct value for display gamma correction.  Essentially, the characters
 consist of slightly slanted zebra patterns; you have to view these glyphs at
-a size of 128ppem (to be more precise, multiples of 32ppem like 96ppem will
-work also, but not as good as 128ppem).
+a size of 96ppem (to be more precise, multiples of 24ppem like 72ppem will
+work also, but not as good as 96ppem).
 
 
     code  glyph name    stripe thickness  distance between stripes
@@ -788,7 +788,7 @@ The ZEBRA macros
 The zebra patterns consist of a series of stripes.  The macros below call
 elements 0, 1, 2, ..., NUM_STRIPES.
 
-  define({NUM_STRIPES}, 32)
+  define({NUM_STRIPES}, 24)
   define({STRIPE_OFFSET}, 12)
   define({STRIPE_HEIGHT}, eval(NUM_STRIPES * STRIPE_OFFSET))
 
