@@ -8,7 +8,7 @@
 
     This Font Software is licensed under the SIL Open Font License,
     Version 1.1.  The license text is available with a FAQ at
-    `http://scripts.sil.org/OFL'.
+    `https://opensource.org/licenses/OFL-1.1'.
 
   -->
 
@@ -2856,10 +2856,10 @@ ALIGNMENTS()dnl
 with Reserved Font Name "RasterInfo".
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
-The license text is available with a FAQ at "http://scripts.sil.org/OFL".
+The license text is available with a FAQ at "https://opensource.org/licenses/OFL-1.1".
     </namerecord>
     <namerecord nameID="14" platformID="1" platEncID="0" langID="0x0" unicode="True">
-      http://scripts.sil.org/OFL
+      https://opensource.org/licenses/OFL-1.1
     </namerecord>
 
     <namerecord nameID="0" platformID="3" platEncID="1" langID="0x409">
@@ -2888,10 +2888,10 @@ The license text is available with a FAQ at "http://scripts.sil.org/OFL".
 with Reserved Font Name "RasterInfo".
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
-The license text is available with a FAQ at "http://scripts.sil.org/OFL".
+The license text is available with a FAQ at "https://opensource.org/licenses/OFL-1.1".
     </namerecord>
     <namerecord nameID="14" platformID="3" platEncID="1" langID="0x409">
-      http://scripts.sil.org/OFL
+      https://opensource.org/licenses/OFL-1.1
     </namerecord>
   </name>
 
